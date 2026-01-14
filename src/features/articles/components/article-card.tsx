@@ -20,7 +20,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
   const images = article.preview_images.split(',')
   const [currentIndex, setCurrentIndex] = useState(0)
   return (
-    <Card className="overflow-hidden rounded-2xl transition-shadow hover:shadow-xl">
+    <Card className="overflow-hidden rounded-2xl transition-shadow hover:shadow-xl glass-card">
       {/* 图片 */}
       <Dialog>
         <DialogTrigger asChild>
@@ -33,12 +33,12 @@ export function ArticleCard({ article }: ArticleCardProps) {
           </div>
         </DialogTrigger>
 
-        <DialogContent className="max-w-7xl p-4">
+        <DialogContent className="p-4 glass-popover max-w-none sm:max-w-none w-auto">
           <div className="relative">
             <img
               src={images[currentIndex]}
               alt={`${article.title}-${currentIndex}`}
-              className="max-w-7xl rounded-lg object-contain"
+              className="max-h-[80vh] max-w-[90vw] rounded-lg object-contain"
             />
 
             {/* 左右切换按钮 */}
@@ -70,7 +70,7 @@ export function ArticleCard({ article }: ArticleCardProps) {
           </div>
 
           {images.length > 1 && (
-            <div className="mt-4 flex gap-2 overflow-x-auto">
+            <div className="mt-4 flex gap-2 overflow-x-auto ">
               {images.map((img, index) => (
                 <button
                   key={img}

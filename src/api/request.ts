@@ -1,6 +1,7 @@
 import type { AxiosRequestConfig } from 'axios'
 import type { ApiResponse } from '@/types/response'
 import axios from './axios'
+import { toast } from 'sonner'
 
 /**
  * 通用 request 方法
@@ -14,8 +15,8 @@ export function request<T>(
   return axios<ApiResponse<T>>(config).then((response) => {
     const body = response.data
 
-    if (body.code !== 200) {
-      throw new Error(body.message)
+    if (body.code !== 0) {
+      toast.error(body.message)
     }
     return body
   })

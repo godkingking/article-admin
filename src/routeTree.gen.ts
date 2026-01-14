@@ -22,8 +22,15 @@ import { Route as authOtpRouteImport } from './routes/(auth)/otp'
 import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password'
 import { Route as AuthenticatedSettingsRouteRouteImport } from './routes/_authenticated/settings/route'
 import { Route as AuthenticatedTasksIndexRouteImport } from './routes/_authenticated/tasks/index'
+import { Route as AuthenticatedSettingsIndexRouteImport } from './routes/_authenticated/settings/index'
 import { Route as AuthenticatedHelpCenterIndexRouteImport } from './routes/_authenticated/help-center/index'
 import { Route as AuthenticatedArticlesIndexRouteImport } from './routes/_authenticated/articles/index'
+import { Route as AuthenticatedSettingsNotificationsRouteImport } from './routes/_authenticated/settings/notifications'
+import { Route as AuthenticatedSettingsFolderRouteImport } from './routes/_authenticated/settings/folder'
+import { Route as AuthenticatedSettingsDownloaderRouteImport } from './routes/_authenticated/settings/downloader'
+import { Route as AuthenticatedSettingsDisplayRouteImport } from './routes/_authenticated/settings/display'
+import { Route as AuthenticatedSettingsAppearanceRouteImport } from './routes/_authenticated/settings/appearance'
+import { Route as AuthenticatedSettingsAccountRouteImport } from './routes/_authenticated/settings/account'
 import { Route as AuthenticatedErrorsErrorRouteImport } from './routes/_authenticated/errors/$error'
 
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -91,6 +98,12 @@ const AuthenticatedTasksIndexRoute = AuthenticatedTasksIndexRouteImport.update({
   path: '/tasks/',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedSettingsIndexRoute =
+  AuthenticatedSettingsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
 const AuthenticatedHelpCenterIndexRoute =
   AuthenticatedHelpCenterIndexRouteImport.update({
     id: '/help-center/',
@@ -103,6 +116,42 @@ const AuthenticatedArticlesIndexRoute =
     path: '/articles/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedSettingsNotificationsRoute =
+  AuthenticatedSettingsNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
+const AuthenticatedSettingsFolderRoute =
+  AuthenticatedSettingsFolderRouteImport.update({
+    id: '/folder',
+    path: '/folder',
+    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
+const AuthenticatedSettingsDownloaderRoute =
+  AuthenticatedSettingsDownloaderRouteImport.update({
+    id: '/downloader',
+    path: '/downloader',
+    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
+const AuthenticatedSettingsDisplayRoute =
+  AuthenticatedSettingsDisplayRouteImport.update({
+    id: '/display',
+    path: '/display',
+    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
+const AuthenticatedSettingsAppearanceRoute =
+  AuthenticatedSettingsAppearanceRouteImport.update({
+    id: '/appearance',
+    path: '/appearance',
+    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
+const AuthenticatedSettingsAccountRoute =
+  AuthenticatedSettingsAccountRouteImport.update({
+    id: '/account',
+    path: '/account',
+    getParentRoute: () => AuthenticatedSettingsRouteRoute,
+  } as any)
 const AuthenticatedErrorsErrorRoute =
   AuthenticatedErrorsErrorRouteImport.update({
     id: '/errors/$error',
@@ -111,7 +160,7 @@ const AuthenticatedErrorsErrorRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/settings': typeof AuthenticatedSettingsRouteRoute
+  '/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
   '/forgot-password': typeof authForgotPasswordRoute
   '/otp': typeof authOtpRoute
   '/sign-in': typeof authSignInRoute
@@ -123,12 +172,18 @@ export interface FileRoutesByFullPath {
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/settings/account': typeof AuthenticatedSettingsAccountRoute
+  '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
+  '/settings/display': typeof AuthenticatedSettingsDisplayRoute
+  '/settings/downloader': typeof AuthenticatedSettingsDownloaderRoute
+  '/settings/folder': typeof AuthenticatedSettingsFolderRoute
+  '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/articles': typeof AuthenticatedArticlesIndexRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
+  '/settings/': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
 }
 export interface FileRoutesByTo {
-  '/settings': typeof AuthenticatedSettingsRouteRoute
   '/forgot-password': typeof authForgotPasswordRoute
   '/otp': typeof authOtpRoute
   '/sign-in': typeof authSignInRoute
@@ -140,14 +195,21 @@ export interface FileRoutesByTo {
   '/503': typeof errors503Route
   '/': typeof AuthenticatedIndexRoute
   '/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/settings/account': typeof AuthenticatedSettingsAccountRoute
+  '/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
+  '/settings/display': typeof AuthenticatedSettingsDisplayRoute
+  '/settings/downloader': typeof AuthenticatedSettingsDownloaderRoute
+  '/settings/folder': typeof AuthenticatedSettingsFolderRoute
+  '/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/articles': typeof AuthenticatedArticlesIndexRoute
   '/help-center': typeof AuthenticatedHelpCenterIndexRoute
+  '/settings': typeof AuthenticatedSettingsIndexRoute
   '/tasks': typeof AuthenticatedTasksIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/_authenticated/settings': typeof AuthenticatedSettingsRouteRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRouteRouteWithChildren
   '/(auth)/forgot-password': typeof authForgotPasswordRoute
   '/(auth)/otp': typeof authOtpRoute
   '/(auth)/sign-in': typeof authSignInRoute
@@ -159,8 +221,15 @@ export interface FileRoutesById {
   '/(errors)/503': typeof errors503Route
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/errors/$error': typeof AuthenticatedErrorsErrorRoute
+  '/_authenticated/settings/account': typeof AuthenticatedSettingsAccountRoute
+  '/_authenticated/settings/appearance': typeof AuthenticatedSettingsAppearanceRoute
+  '/_authenticated/settings/display': typeof AuthenticatedSettingsDisplayRoute
+  '/_authenticated/settings/downloader': typeof AuthenticatedSettingsDownloaderRoute
+  '/_authenticated/settings/folder': typeof AuthenticatedSettingsFolderRoute
+  '/_authenticated/settings/notifications': typeof AuthenticatedSettingsNotificationsRoute
   '/_authenticated/articles/': typeof AuthenticatedArticlesIndexRoute
   '/_authenticated/help-center/': typeof AuthenticatedHelpCenterIndexRoute
+  '/_authenticated/settings/': typeof AuthenticatedSettingsIndexRoute
   '/_authenticated/tasks/': typeof AuthenticatedTasksIndexRoute
 }
 export interface FileRouteTypes {
@@ -178,12 +247,18 @@ export interface FileRouteTypes {
     | '/503'
     | '/'
     | '/errors/$error'
+    | '/settings/account'
+    | '/settings/appearance'
+    | '/settings/display'
+    | '/settings/downloader'
+    | '/settings/folder'
+    | '/settings/notifications'
     | '/articles'
     | '/help-center'
+    | '/settings/'
     | '/tasks'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/settings'
     | '/forgot-password'
     | '/otp'
     | '/sign-in'
@@ -195,8 +270,15 @@ export interface FileRouteTypes {
     | '/503'
     | '/'
     | '/errors/$error'
+    | '/settings/account'
+    | '/settings/appearance'
+    | '/settings/display'
+    | '/settings/downloader'
+    | '/settings/folder'
+    | '/settings/notifications'
     | '/articles'
     | '/help-center'
+    | '/settings'
     | '/tasks'
   id:
     | '__root__'
@@ -213,8 +295,15 @@ export interface FileRouteTypes {
     | '/(errors)/503'
     | '/_authenticated/'
     | '/_authenticated/errors/$error'
+    | '/_authenticated/settings/account'
+    | '/_authenticated/settings/appearance'
+    | '/_authenticated/settings/display'
+    | '/_authenticated/settings/downloader'
+    | '/_authenticated/settings/folder'
+    | '/_authenticated/settings/notifications'
     | '/_authenticated/articles/'
     | '/_authenticated/help-center/'
+    | '/_authenticated/settings/'
     | '/_authenticated/tasks/'
   fileRoutesById: FileRoutesById
 }
@@ -324,6 +413,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTasksIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/settings/': {
+      id: '/_authenticated/settings/'
+      path: '/'
+      fullPath: '/settings/'
+      preLoaderRoute: typeof AuthenticatedSettingsIndexRouteImport
+      parentRoute: typeof AuthenticatedSettingsRouteRoute
+    }
     '/_authenticated/help-center/': {
       id: '/_authenticated/help-center/'
       path: '/help-center'
@@ -338,6 +434,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedArticlesIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/settings/notifications': {
+      id: '/_authenticated/settings/notifications'
+      path: '/notifications'
+      fullPath: '/settings/notifications'
+      preLoaderRoute: typeof AuthenticatedSettingsNotificationsRouteImport
+      parentRoute: typeof AuthenticatedSettingsRouteRoute
+    }
+    '/_authenticated/settings/folder': {
+      id: '/_authenticated/settings/folder'
+      path: '/folder'
+      fullPath: '/settings/folder'
+      preLoaderRoute: typeof AuthenticatedSettingsFolderRouteImport
+      parentRoute: typeof AuthenticatedSettingsRouteRoute
+    }
+    '/_authenticated/settings/downloader': {
+      id: '/_authenticated/settings/downloader'
+      path: '/downloader'
+      fullPath: '/settings/downloader'
+      preLoaderRoute: typeof AuthenticatedSettingsDownloaderRouteImport
+      parentRoute: typeof AuthenticatedSettingsRouteRoute
+    }
+    '/_authenticated/settings/display': {
+      id: '/_authenticated/settings/display'
+      path: '/display'
+      fullPath: '/settings/display'
+      preLoaderRoute: typeof AuthenticatedSettingsDisplayRouteImport
+      parentRoute: typeof AuthenticatedSettingsRouteRoute
+    }
+    '/_authenticated/settings/appearance': {
+      id: '/_authenticated/settings/appearance'
+      path: '/appearance'
+      fullPath: '/settings/appearance'
+      preLoaderRoute: typeof AuthenticatedSettingsAppearanceRouteImport
+      parentRoute: typeof AuthenticatedSettingsRouteRoute
+    }
+    '/_authenticated/settings/account': {
+      id: '/_authenticated/settings/account'
+      path: '/account'
+      fullPath: '/settings/account'
+      preLoaderRoute: typeof AuthenticatedSettingsAccountRouteImport
+      parentRoute: typeof AuthenticatedSettingsRouteRoute
+    }
     '/_authenticated/errors/$error': {
       id: '/_authenticated/errors/$error'
       path: '/errors/$error'
@@ -348,8 +486,35 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedSettingsRouteRouteChildren {
+  AuthenticatedSettingsAccountRoute: typeof AuthenticatedSettingsAccountRoute
+  AuthenticatedSettingsAppearanceRoute: typeof AuthenticatedSettingsAppearanceRoute
+  AuthenticatedSettingsDisplayRoute: typeof AuthenticatedSettingsDisplayRoute
+  AuthenticatedSettingsDownloaderRoute: typeof AuthenticatedSettingsDownloaderRoute
+  AuthenticatedSettingsFolderRoute: typeof AuthenticatedSettingsFolderRoute
+  AuthenticatedSettingsNotificationsRoute: typeof AuthenticatedSettingsNotificationsRoute
+  AuthenticatedSettingsIndexRoute: typeof AuthenticatedSettingsIndexRoute
+}
+
+const AuthenticatedSettingsRouteRouteChildren: AuthenticatedSettingsRouteRouteChildren =
+  {
+    AuthenticatedSettingsAccountRoute: AuthenticatedSettingsAccountRoute,
+    AuthenticatedSettingsAppearanceRoute: AuthenticatedSettingsAppearanceRoute,
+    AuthenticatedSettingsDisplayRoute: AuthenticatedSettingsDisplayRoute,
+    AuthenticatedSettingsDownloaderRoute: AuthenticatedSettingsDownloaderRoute,
+    AuthenticatedSettingsFolderRoute: AuthenticatedSettingsFolderRoute,
+    AuthenticatedSettingsNotificationsRoute:
+      AuthenticatedSettingsNotificationsRoute,
+    AuthenticatedSettingsIndexRoute: AuthenticatedSettingsIndexRoute,
+  }
+
+const AuthenticatedSettingsRouteRouteWithChildren =
+  AuthenticatedSettingsRouteRoute._addFileChildren(
+    AuthenticatedSettingsRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRoute
+  AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRouteWithChildren
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedErrorsErrorRoute: typeof AuthenticatedErrorsErrorRoute
   AuthenticatedArticlesIndexRoute: typeof AuthenticatedArticlesIndexRoute
@@ -358,7 +523,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRoute,
+  AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRouteWithChildren,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedErrorsErrorRoute: AuthenticatedErrorsErrorRoute,
   AuthenticatedArticlesIndexRoute: AuthenticatedArticlesIndexRoute,
