@@ -62,7 +62,7 @@ export function Settings() {
             <h1 className="text-3xl font-bold">服务器配置</h1>
           </div>
           <p className="text-muted-foreground">
-            配置和管理您的下载器、媒体服务器等服务连接
+            配置和管理您的下载器、通知渠道等
           </p>
         </div>
         <TopNav items={sidebarNavItems} />

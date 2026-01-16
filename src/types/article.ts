@@ -18,5 +18,8 @@ export interface ArticleFilter {
 export interface Category {
   category: string
   count: number
-  items?: Category[]
+  items?: {
+    category: string
+    count: number
+  }[]
 }

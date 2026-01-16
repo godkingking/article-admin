@@ -1,81 +1,73 @@
-import { useEffect, useMemo, useState } from 'react'
-import { useQuery } from '@tanstack/react-query';
-import { Plus, Trash2, ChevronDown } from 'lucide-react';
-import { toast } from 'sonner';
-import { getCategories } from '@/api/article.ts';
-import { getConfig, postConfig } from '@/api/config.ts';
-import { useIsMobile } from '@/hooks/use-mobile.tsx';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card.tsx';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useEffect, useState } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { Plus, Trash2, ChevronDown } from 'lucide-react'
+import { toast } from 'sonner'
+import { getCategories } from '@/api/article.ts'
+import { getConfig, postConfig } from '@/api/config.ts'
+import { useIsMobile } from '@/hooks/use-mobile.tsx'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card.tsx'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { DOWNLOADER_META } from '@/features/settings/data/downloader-list.ts'
+import { type PathItem } from '@/features/settings/downloader/path-input-list.tsx'
 
-
-interface Config {
+interface Folder {
   category: string
   subCategory: string
   downloader: string
   savePath: string
 }
 
-interface SavePath {
-  label: string
-  path: string
-}
-
-type ConfigValue = Record<string, string | SavePath[]>
-
 interface DownloaderConfig {
   id: string
   name: string
-  save_paths: SavePath[]
+  save_paths: PathItem[]
 }
-
-const DOWNLOADER_META = [
-  { id: 'qbittorrent', name: 'qBittorrent' },
-  { id: 'transmission', name: 'Transmission' },
-  { id: 'clouddrive', name: 'CloudDrive' },
-  { id: 'thunder', name: '迅雷' },
-]
 
 export function FolderForm() {
   const isMobile = useIsMobile()
-
+  const [folders, setFolders] = useState<Folder[]>([])
+  const queryClient = useQueryClient()
 
   const { data } = useQuery({
-    queryKey: ['configs'],
+    queryKey: ['folders'],
     queryFn: async () => {
-      const res = await getConfig<Config[]>('DownloadFolder')
-      return res.data as Config[]
+      const res = await getConfig<Folder[]>('DownloadFolder')
+      return res.data
     },
     staleTime: 5 * 60 * 1000,
-    select: (data) => data
   })
 
-  const [configs, setConfigs] = useState<Config[]>([])
+  useEffect(() => {
+    if (data) {
+      setFolders(data)
+    }
+  }, [data])
 
-
-  const isValidDownloader = (data: ConfigValue) =>
+  const isValidDownloader = (data: DownloaderConfig) =>
     data &&
     typeof data === 'object' &&
     Array.isArray(data.save_paths) &&
     data.save_paths.length > 0
 
-  const normalizePaths = (raw: unknown): SavePath[] => {
-    if (!Array.isArray(raw)) return []
-
-    return raw.map((p) => ({
-      id: typeof p?.id === 'string' ? p.id : crypto.randomUUID(),
-      label: typeof p?.label === 'string' ? p.label : '',
-      path: typeof p?.path === 'string' ? p.path : '',
-    }))
-  }
-
   const { data: downloaders = [] } = useQuery<DownloaderConfig[]>({
     queryKey: ['downloaders'],
     queryFn: async () => {
       const results = await Promise.allSettled(
-        DOWNLOADER_META.map((d) => getConfig<ConfigValue>(`Downloader.${d.id}`))
+        DOWNLOADER_META.map((d) =>
+          getConfig<DownloaderConfig>(`Downloader.${d.id}`)
+        )
       )
 
       return results
@@ -86,7 +78,7 @@ export function FolderForm() {
             return {
               id: DOWNLOADER_META[index].id,
               name: DOWNLOADER_META[index].name,
-              save_paths: normalizePaths(data.save_paths),
+              save_paths: data.save_paths,
             } satisfies DownloaderConfig
           }
           return null
@@ -96,15 +88,9 @@ export function FolderForm() {
     staleTime: 5 * 60 * 1000,
   })
 
-  const getSavePaths = (downloaderId: string): SavePath[] => {
+  const getSavePaths = (downloaderId: string): PathItem[] => {
     return downloaders.find((d) => d.id === downloaderId)?.save_paths ?? []
   }
-
-  const initialConfigs = useMemo(() => data ?? [], [data])
-
-  useEffect(() => {
-    setConfigs(initialConfigs)
-  }, [initialConfigs])
 
   const { data: categories } = useQuery({
     queryKey: ['category'],
@@ -116,7 +102,7 @@ export function FolderForm() {
   })
 
   const handleCategoryChange = (index: number, value: string) => {
-    setConfigs((prev) =>
+    setFolders((prev) =>
       prev.map((cfg, i) =>
         i === index ? { ...cfg, category: value, subCategory: '' } : cfg
       )
@@ -127,37 +113,37 @@ export function FolderForm() {
     return categories?.find((c) => c.category === category)?.items ?? []
   }
 
-  const updateConfig = <K extends keyof Config>(
+  const updateFolder = <K extends keyof Folder>(
     index: number,
     key: K,
-    value: Config[K]
+    value: Folder[K]
   ) => {
-    setConfigs((prev) =>
+    setFolders((prev) =>
       prev.map((item, i) => (i === index ? { ...item, [key]: value } : item))
     )
   }
 
-  const addConfig = () => {
-    setConfigs((prev) => [
+  const addFolder = () => {
+    setFolders((prev) => [
       ...prev,
       { category: '', subCategory: '', downloader: '', savePath: '' },
     ])
   }
 
-  const removeConfig = (index: number) => {
-    setConfigs((prev) => prev.filter((_, i) => i !== index))
+  const removeFolder = (index: number) => {
+    setFolders((prev) => prev.filter((_, i) => i !== index))
   }
 
-  const handleSaveConfig = () => {
-    postConfig('DownloadFolder', configs as never).then((res) => {
-      toast.success(res.message)
-    })
+  const handleSaveFolders = async () => {
+    const res = await postConfig('DownloadFolder', folders as never)
+    toast.success(res.message)
+    await queryClient.invalidateQueries({ queryKey: ['folders'] })
   }
 
   return (
     <div className='space-y-6'>
       <div className='space-y-4'>
-        {configs.map((cfg, index) =>
+        {folders.map((cfg, index) =>
           isMobile ? (
             <Collapsible key={index} className='rounded-lg border'>
               <div className='flex items-center justify-between px-4 py-3'>
@@ -183,8 +169,8 @@ export function FolderForm() {
                   <Button
                     size='icon'
                     variant='ghost'
-                    onClick={() => removeConfig(index)}
-                    disabled={configs.length === 1}
+                    onClick={() => removeFolder(index)}
+                    disabled={folders.length === 1}
                   >
                     <Trash2 className='h-4 w-4' />
                   </Button>
@@ -211,7 +197,7 @@ export function FolderForm() {
                 <Select
                   value={cfg.subCategory}
                   disabled={!cfg.category}
-                  onValueChange={(v) => updateConfig(index, 'subCategory', v)}
+                  onValueChange={(v) => updateFolder(index, 'subCategory', v)}
                 >
                   <SelectTrigger className='w-full'>
                     <SelectValue placeholder='选择子类目' />
@@ -229,8 +215,8 @@ export function FolderForm() {
                 <Select
                   value={cfg.downloader}
                   onValueChange={(v) => {
-                    updateConfig(index, 'downloader', v)
-                    updateConfig(index, 'savePath', '')
+                    updateFolder(index, 'downloader', v)
+                    updateFolder(index, 'savePath', '')
                   }}
                 >
                   <SelectTrigger className='w-full'>
@@ -248,7 +234,7 @@ export function FolderForm() {
                 <Select
                   value={cfg.savePath}
                   disabled={!cfg.downloader}
-                  onValueChange={(v) => updateConfig(index, 'savePath', v)}
+                  onValueChange={(v) => updateFolder(index, 'savePath', v)}
                 >
                   <SelectTrigger className='w-full'>
                     <SelectValue placeholder='选择下载目录' />
@@ -286,7 +272,7 @@ export function FolderForm() {
                   <Select
                     value={cfg.subCategory}
                     disabled={!cfg.category}
-                    onValueChange={(v) => updateConfig(index, 'subCategory', v)}
+                    onValueChange={(v) => updateFolder(index, 'subCategory', v)}
                   >
                     <SelectTrigger className='w-full'>
                       <SelectValue placeholder='选择子类目' />
@@ -304,8 +290,8 @@ export function FolderForm() {
                   <Select
                     value={cfg.downloader}
                     onValueChange={(v) => {
-                      updateConfig(index, 'downloader', v)
-                      updateConfig(index, 'savePath', '')
+                      updateFolder(index, 'downloader', v)
+                      updateFolder(index, 'savePath', '')
                     }}
                   >
                     <SelectTrigger className='w-full'>
@@ -323,7 +309,7 @@ export function FolderForm() {
                   <Select
                     value={cfg.savePath}
                     disabled={!cfg.downloader}
-                    onValueChange={(v) => updateConfig(index, 'savePath', v)}
+                    onValueChange={(v) => updateFolder(index, 'savePath', v)}
                   >
                     <SelectTrigger className='w-full'>
                       <SelectValue placeholder='选择下载目录' />
@@ -340,8 +326,8 @@ export function FolderForm() {
                   <Button
                     size='icon'
                     variant='ghost'
-                    onClick={() => removeConfig(index)}
-                    disabled={configs.length === 1}
+                    onClick={() => removeFolder(index)}
+                    disabled={folders.length === 1}
                   >
                     <Trash2 className='h-4 w-4' />
                   </Button>
@@ -351,13 +337,17 @@ export function FolderForm() {
           )
         )}
 
-        <Button variant='outline' onClick={addConfig} className="w-full h-12 border-dashed">
+        <Button
+          variant='outline'
+          onClick={addFolder}
+          className='h-12 w-full border-dashed'
+        >
           <Plus className='mr-2 h-4 w-4' />
           添加配置
         </Button>
       </div>
       <div className='flex justify-end'>
-        <Button onClick={handleSaveConfig}>保存配置</Button>
+        <Button onClick={handleSaveFolders}>保存配置</Button>
       </div>
     </div>
   )

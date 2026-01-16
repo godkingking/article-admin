@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import type { ArticleFilter } from '@/types/article.ts'
 import { getArticles, getCategories } from '@/api/article.ts'
-import { Separator } from '@/components/ui/separator'
 import { ArticleCard } from '@/features/articles/components/article-card.tsx'
 import { ConfigDrawer } from '@/components/config-drawer'
 import { Header } from '@/components/layout/header'
@@ -56,14 +55,6 @@ export function Articles() {
       </Header>
 
       <Main className='flex flex-1 flex-col gap-4 sm:gap-6'>
-        <div className='flex flex-wrap items-end justify-between gap-2'>
-          <div>
-            <h2 className='text-2xl font-bold tracking-tight'>Tasks</h2>
-            <p className='text-muted-foreground'>
-              Here&apos;s a list of your tasks for this month!
-            </p>
-          </div>
-        </div>
         <FilterBar
           value={filter}
           categories={categories || []}
@@ -80,7 +71,6 @@ export function Articles() {
             })
           }}
         />
-        <Separator className='shadow-sm' />
         <div className='py-1'>
           {/* Grid */}
           <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6'>
