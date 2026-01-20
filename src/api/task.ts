@@ -6,13 +6,17 @@ export function getTasks() {
 }
 
 export function addTask(task: Task) {
-  return request<Task[]>({ url: '/tasks', method: 'post', data: task })
+  return request({ url: '/tasks', method: 'post', data: task })
 }
 
 export function updateTask(task: Task) {
-  return request<Task[]>({ url: '/tasks', method: 'put', data: task })
+  return request({ url: '/tasks', method: 'put', data: task })
 }
 
 export function deleteTask(task_id: number) {
-  return request<Task[]>({ url: `/tasks/${task_id}`, method: 'DELETE' })
+  return request({ url: `/tasks/${task_id}`, method: 'delete' })
+}
+
+export function runTask(task_id: number) {
+  return request<Task[]>({ url: `/tasks/run/${task_id}`, method: 'get' })
 }

@@ -7,7 +7,13 @@ import type { TaskFunction } from '@/types/config.ts'
 import { Plus, Pencil, Trash2, Clock, Zap, Play } from 'lucide-react'
 import { toast } from 'sonner'
 import { getConfig } from '@/api/config.ts'
-import { addTask, deleteTask, getTasks, updateTask } from '@/api/task.ts'
+import {
+  addTask,
+  deleteTask,
+  getTasks,
+  runTask,
+  updateTask,
+} from '@/api/task.ts'
 import { cn } from '@/lib/utils.ts'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -152,6 +158,11 @@ export default function TaskManager() {
 
   const handleDelete = async (id: number) => {
     deleteTaskMutation.mutate(id)
+  }
+
+  const handleRunTask = async (taskId: number) => {
+    const res = await runTask(taskId)
+    toast.success(res.message)
   }
 
   return (
@@ -344,10 +355,7 @@ export default function TaskManager() {
                     <Button
                       variant='ghost'
                       size='icon'
-                      onClick={() => {
-                        setEditingTask(task)
-                        setIsFormOpen(true)
-                      }}
+                      onClick={() => handleRunTask(task.id)}
                     >
                       <Play className='h-4 w-4' />
                     </Button>

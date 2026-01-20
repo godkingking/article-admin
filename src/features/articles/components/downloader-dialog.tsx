@@ -1,8 +1,13 @@
 import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import type { Article } from '@/types/article.ts'
 import { Download, FolderOpen, HardDrive, Check } from 'lucide-react'
 import { toast } from 'sonner'
-import { downloadArticle, manulDownloadArticle } from '@/api/article'
+import {
+  type ArticleListResult,
+  downloadArticle,
+  manulDownloadArticle,
+} from '@/api/article'
 import { getConfig } from '@/api/config'
 import { Button } from '@/components/ui/button'
 import {
@@ -36,8 +41,9 @@ export function DownloaderDialog({
 }: DownloaderDialogProps) {
   const [open, setOpen] = useState(false)
   const [selectedDownloader, setSelectedDownloader] = useState<string>('auto')
-  const [selectedPath, setSelectedPath] = useState<string>('')
+  const [selectedPath, setSelectedPath] = useState<string>('auto')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const queryClient = useQueryClient()
 
   const { data: downloaders = [], isLoading } = useQuery<DownloaderConfig[]>({
     queryKey: ['downloaders'],
@@ -83,6 +89,21 @@ export function DownloaderDialog({
   // 获取当前选中的下载器配置
   const currentDownloader = downloaders.find((d) => d.id === selectedDownloader)
 
+  const updateSockStatus = () => {
+    queryClient.setQueriesData(
+      { queryKey: ['articles'], exact: false },
+      (oldData: ArticleListResult) => {
+        if (!oldData) return oldData
+        return {
+          ...oldData,
+          items: oldData.items.map((item: Article) =>
+            item.tid === articleId ? { ...item, in_stock: true } : item
+          ),
+        }
+      }
+    )
+  }
+
   const handleSubmit = async () => {
     if (!selectedDownloader || !selectedPath) {
       toast.error('请选择下载器和下载目录')
@@ -104,9 +125,9 @@ export function DownloaderDialog({
       setOpen(false)
       setSelectedDownloader('')
       setSelectedPath('')
+      updateSockStatus()
     } catch (err) {
-      toast.error('推送失败，请重试')
-      console.error(err)
+      toast.error(`推送失败，请重试:${err}`)
     } finally {
       setIsSubmitting(false)
     }
@@ -210,7 +231,7 @@ export function DownloaderDialog({
             <Separator />
 
             {/* 下载目录选择 */}
-            { selectedDownloader !== 'auto' && currentDownloader && (
+            {selectedDownloader !== 'auto' && currentDownloader && (
               <div className='space-y-3'>
                 <Label className='flex items-center gap-2 text-sm font-medium'>
                   <FolderOpen className='h-4 w-4' />
