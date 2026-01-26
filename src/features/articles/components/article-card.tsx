@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import {
   Copy,
-  ExternalLink,
   Image as ImageIcon,
   Download,
   Package,
@@ -134,19 +133,6 @@ export function ArticleCard({ article }: { article: Article }) {
               </>
             )}
           </span>
-
-          {/* 查看详情链接 */}
-          {article.detail_url && (
-            <a
-              href={article.detail_url}
-              target='_blank'
-              rel='noopener noreferrer'
-              className='ml-auto flex items-center gap-1 text-muted-foreground transition-colors hover:text-primary'
-            >
-              <ExternalLink className='h-3 w-3' />
-              <span className='text-xs'>详情</span>
-            </a>
-          )}
         </div>
       </div>
 
